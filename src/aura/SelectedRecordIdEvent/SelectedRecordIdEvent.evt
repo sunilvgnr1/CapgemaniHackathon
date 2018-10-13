@@ -1,5 +1,0 @@
-<aura:event type="COMPONENT" description="Event template" >
-		<aura:attribute name="selectedNodeId" type="String"/>
-    	<aura:attribute name="mode" 		  type="String"/>
-    
-</aura:event>
