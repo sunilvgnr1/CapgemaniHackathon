@@ -1,0 +1,22 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global">
+        <aura:attribute name="sobjecttype"  	type="String" />
+     	<aura:attribute name="selectedId"       type="String" />
+    	<aura:attribute name="Acc" 				type="Account"/>
+     	<aura:attribute name="flag" 		    type="Boolean"  default="false"/>
+    	<aura:attribute name="AccListFields"    type="String[]" default="Name,AccountNumber,Ownership,AccountSource,ParentId,AnnualRevenue,CreatedById,LastModifiedByIdType,Industry,Description,Phone,Fax"/>
+  
+   <aura:if isTrue="{!v.flag}" >
+    <lightning:card>
+        <div class="slds-p-left_large slds-p-right_medium">
+            <lightning:recordForm aura:id="brokerForm"
+                                  recordId="{!v.selectedId}"
+                                  objectApiName="Account"
+                                  fields="{!v.AccListFields}"
+                                  columns="2"
+                                  mode="readonly"/>
+        </div>
+    </lightning:card>
+   </aura:if>
+    
+    
+</aura:component>

@@ -1,0 +1,206 @@
+<aura:component controller="Hackathon_Controller" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName" access="global" >
+	<!-- Aura Attributes-->
+    	<aura:attribute name="isOpen" 				type="boolean" 	 default="false"/>
+    	<aura:attribute name="sobjecttype"  		type="String"    default="{!v.sObjectName}"/>
+        <aura:attribute name="mydata" 	    		type="Account[]" />
+        <aura:attribute name="ListForUpdateSource" 	type="Account[]" />
+   		<aura:attribute name="selectedId"   		type="String" 	 default=''/>
+        <aura:attribute name="AccSourceOptions"   	type="List" 	 />
+    
+   		<aura:attribute name="inlineEdit" 			type="Boolean" 	 default="false"/>
+    	<aura:attribute name="flag" 				type="Boolean" 	 default="false"/>
+        <aura:attribute name="checkedValue" 		type="Boolean"   default="false"/>
+    	<aura:attribute name="objInfo" 				type="Account" 	 default="{sobjectType : 'Account'}" />  
+    	<aura:attribute name="tableLabels"  		type="List"      default="['Select','Account Name','Account Number',
+                                                                      'Account Owner','Account Source','Annual Revenue','Type',
+                                                                      'Industry','Created By','Edit','Delete']" />
+    
+	
+    <!-- Aura Attributes-->
+    
+    <!-- System and Event Handlers -->
+        <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+        <aura:handler name="onSaveSuccess" event="force:recordSaveSuccess" action="{!c.doInit}"/>
+    	<!-- System and Event Handlers -->
+    
+    <lightning:card title="List Of Records of Account">
+        <aura:set attribute="actions">
+            <lightning:button label="New" 		 			onclick="{!c.onNew}"/>      
+           	<lightning:button label="Update Account Source" onclick="{!c.onUpdateSource}"/>
+            <lightning:button label="Delete" 				onclick="{!c.onMassDelete}"/>
+        </aura:set>
+      <table id="tabletable" class="slds-table slds-table_bordered " role="grid" aura:id="masterTable" style="">
+         <thead class="slds-text-title_caps" >
+               <tr scope="col" class="slds-text-title_caps">
+                   <aura:iteration items="{!v.tableLabels}" var="obj" indexVar="index">
+					<th scope="col"  class="slds-cell-wrap slds-text-title_caps" style="width: 1.25rem;">
+                        <div class="slds-truncate" title="{!obj}">{!obj}</div>
+                    </th>
+                    </aura:iteration>
+				</tr>
+		</thead>
+		<tbody>                
+      <aura:iteration items="{!v.mydata}" var="obj" indexVar="index">
+                <tr class="slds-hint-parent">
+              <td data-label="select">
+                <div class="slds-truncate slds-text-align--center" title="Select" >
+                   <lightning:input type="checkbox" name="{!index}" checked="false" onchange="{!c.oncheckBox}"/>
+                 </div>
+            </td>
+            <th data-label="{!obj.Name}" scope="row">
+                <div class="slds-truncate" title="{!obj.Name}">                
+                               <a href="javascript:void(0);" tabindex="-1" onclick="{!c.onClickHyperlink}" id="{!obj.Id}">
+                                    <ui:outputText class="" value="{!obj.Name}"/>
+                               </a>                    
+                </div>
+            </th>
+              <td data-label="{!obj.AccountNumber}">
+                <div class="slds-truncate" title="{!obj.AccountNumber}">
+                    <ui:outputText class="" value="{!obj.AccountNumber}"/>      
+                 </div>
+            </td> 
+              <td data-label="{!obj.Ownership}">
+                <div class="slds-truncate" title="{!obj.Ownership}">
+                     <ui:outputText class="" value="{!obj.Ownership}"/>          
+                 </div>
+            </td> 
+              <td data-label="{!obj.AccountSource}">
+                <div class="slds-truncate" title="{!obj.AccountSource}">
+                     <ui:outputText class="" value="{!obj.AccountSource}"/>  
+                 </div>
+            </td>           
+              <td data-label="{!obj.AnnualRevenue}">
+                <div class="slds-truncate" title="{!obj.AnnualRevenue}">
+                    <ui:outputText class="" value="{!obj.AnnualRevenue}"/>                  
+                 </div>
+            </td> 
+              <td data-label="{!obj.Type}">
+                <div class="slds-truncate" title="{!obj.Type}">
+                   <ui:outputText class="" value="{!obj.Type}"/>   
+                 </div>
+            </td> 
+              <td data-label="{!obj.Industry}">
+                <div class="slds-truncate" title="{!obj.Industry}">
+                         <ui:outputText class="" value="{!obj.Industry}"/>                         
+                </div>
+            </td> 
+              <td data-label="{!obj.CreatedBy.Name}">
+                <div class="slds-truncate" title="{!obj.CreatedBy.Name}">
+                         <ui:outputText class="" value="{!obj.CreatedBy.Name}"/>                         
+                </div>
+            </td> 
+              <td> 
+                <div class="slds-truncate" title="edit">
+                 <lightning:buttonIcon iconName="utility:edit" variant="warning" onclick="{! c.onEdit }" alternativeText="{!obj.Id}" />
+              </div>            
+            </td>
+              <td> 
+                <div class="slds-truncate" title="delete">
+                    <lightning:buttonIcon iconName="utility:delete" variant="warning" onclick="{! c.onDelete }" alternativeText="{!obj.Id}" />
+                </div>            
+            </td>
+        </tr>
+            </aura:iteration>
+           
+            </tbody>
+	</table>
+	 </lightning:card>
+    
+     <lightning:card title=" Selected Record Details" iconName="standard:account">  
+         <aura:set attribute="footer">
+         <aura:if isTrue="{!( v.selectedId != '') }">
+             <c:SelectedRecord flag="{!v.flag}" selectedId="{!v.selectedId}" sobjecttype="{!v.sobjecttype}"/>
+         </aura:if>   
+         </aura:set>
+  
+    </lightning:card>
+  
+    
+    <!--Use "slds-m-around_xx-large" class to add standard X-Large padding to the component--> 
+    <div class="slds-m-around_xx-large">
+       <!--Use aura:if tag to display Model Box, on the bese of conditions. [isOpen boolean attribute] -->   
+        <aura:if isTrue="{!v.isOpen}">
+            
+            <section role="dialog" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Update Account Source</h2>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+<lightning:card>
+        
+      <table id="tabletable" class="slds-table slds-table_bordered " role="grid" aura:id="masterTable" style="">
+         <thead class="slds-text-title_caps" >
+               
+                <tr scope="col" class="slds-text-title_caps">
+
+                  <th scope="col"  class="slds-cell-wrap slds-text-title_caps" style="width: 1.25rem;">
+                        <div class="slds-truncate" title="Selected">Selected</div>
+                    </th>
+                    <th scope="col"  class="slds-cell-wrap slds-text-title_caps" style="width: 1.25rem;">
+                        <div class="slds-truncate" title="Account Name">Account Name</div>
+                    </th>
+                    <th scope="col"  class="slds-cell-wrap slds-text-title_caps" style="width: 1.25rem;">
+                        <div class="slds-truncate" title="Account Source">Account Source</div>
+                    </th>
+                    
+                   
+				</tr>
+		</thead>
+		<tbody>                
+      <aura:iteration items="{!v.ListForUpdateSource}" var="obj" indexVar="index">
+                <tr class="slds-hint-parent">
+              <td data-label="select">
+                <div class="slds-truncate" title="Select">
+                   <lightning:input type="checkbox" name="{!index}" checked="true"/>
+                 </div>
+            </td>
+            <th data-label="{!obj.Name}" scope="row">
+                <div class="slds-truncate" title="{!obj.Name}">  
+                    <ui:outputText class="" value="{!obj.Name}"/>
+                </div>
+            </th>
+            <td data-label="{!obj.AccountSource}">
+                <div class="slds-truncate" title="{!obj.AccountSource}">
+                     <lightning:select name="mySelect" aura:id="mySelect" value="{!obj.AccountSource}">
+                        <aura:iteration items="{!v.AccSourceOptions}" var="item">
+                            <option text="{!item.label}" value="{!item.value}"/>
+                        </aura:iteration>
+                    </lightning:select>
+                 </div>
+            </td>     
+        </tr>
+                      <!--  <c:Hackathon_03_SingleRecord singleNode="{!obj}" inlineEdit="{!v.inlineEdit}"/>-->
+      </aura:iteration>
+           
+            </tbody>
+	</table>
+	 </lightning:card>                        
+                    </div>
+                    <!--###### MODAL BOX FOOTER Part Start ######-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral" 
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel }"/>
+                        <lightning:button variant="brand" 
+                                          label="Update and Exit"
+                                          title="Update and Exit "
+                                          onclick="{! c.onSaveUpdateSource }"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+            
+        </aura:if>
+    </div>
+    
+</aura:component>
