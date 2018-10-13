@@ -1,5 +1,5 @@
 # CapgemaniHackathon
-Application source code 
+ 
 
 Description
 Develop a salesforce lightning experience where user navigates to an account homepage. Which displays list of account records. User can select multiple records in list by clicking checkboxes. User should be able to update ‘Account Source’ for these selected records at once by clicking ‘Update Account Source’ button on homepage. User should be able to delete multiple records in list at once by clicking ‘Delete’ button.
