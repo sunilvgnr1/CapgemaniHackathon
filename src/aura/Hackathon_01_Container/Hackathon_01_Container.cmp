@@ -43,8 +43,9 @@
       <aura:iteration items="{!v.mydata}" var="obj" indexVar="index">
                 <tr class="slds-hint-parent">
               <td data-label="select">
-                <div class="slds-truncate slds-text-align--center" title="Select" >
-                   <lightning:input type="checkbox" name="{!index}" checked="false" onchange="{!c.oncheckBox}"/>
+                <div class="slds-truncate slds-text-align--center" title="Select" >                    
+                    <ui:inputCheckbox aura:id="checkbox" name="{!index}" change="{!c.oncheckBox}" value="false"/>
+                  <!-- <lightning:input type="checkbox" name="{!index}" checked="false" onchange="{!c.oncheckBox}"/>-->
                  </div>
             </td>
             <th data-label="{!obj.Name}" scope="row">
@@ -159,7 +160,8 @@
                 <tr class="slds-hint-parent">
               <td data-label="select">
                 <div class="slds-truncate" title="Select">
-                   <lightning:input type="checkbox" name="{!index}" checked="true"/>
+                    <ui:inputCheckbox aura:id="checkboxSelected" name="{!index}" value="true"/>
+                   <!-- <lightning:input type="checkbox" name="{!index}" checked="true"/>-->
                  </div>
             </td>
             <th data-label="{!obj.Name}" scope="row">

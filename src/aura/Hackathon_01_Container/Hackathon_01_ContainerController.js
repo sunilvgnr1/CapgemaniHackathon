@@ -49,7 +49,7 @@
     },
     oncheckBox:function(component, event, helper) {
         var recIndex 	  	=event.getSource().get("v.name");        
-        var checkedValue  	=event.getSource().get("v.checked");        
+        var checkedValue  	=event.getSource().get("v.value");        
         var lis   			=component.get("v.ListForUpdateSource");
         var mydat 			=component.get("v.mydata");
         if(checkedValue && !lis.includes(mydat[recIndex])){            
