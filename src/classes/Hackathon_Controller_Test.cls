@@ -11,7 +11,7 @@ public class Hackathon_Controller_Test {
         insert Acclist;
         Hackathon_Controller.saveListOfRecords(Acclist);
         insert Acc3;
-        Hackathon_Controller.deleteRecord(Acc3.id);
+       // Hackathon_Controller.deleteRecord(Acc3.id);
         Hackathon_Controller.massDeleteRecords(Acclist);
         sObject Obj= new account();
         Hackathon_Controller.getPickListValues(Obj, 'AccountSource');

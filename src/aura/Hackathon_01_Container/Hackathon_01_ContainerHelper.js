@@ -50,34 +50,6 @@
 
         $A.enqueueAction(action);
     },
-     deleteMethod:function(component, event, helper,recId,mode) {         
-       var action = component.get("c.deleteRecord"); 
-       var emptyList=[];  
-             action.setParams({ recIdforDel : recId
-                              }); 
-            action.setCallback(this, function(response) {
-            var state = response.getState();
-            if (state === "SUCCESS") { 
-                	var params={ "title": "Success!",mode: 'sticky',type: "Success","message": "Record Deleted"};
-           	  		helper.showToasts(component, params, event);
-               		component.set("v.mydata",response.getReturnValue());
-                	component.set("v.ListForUpdateSource",emptyList);
-				 }
-            else if (state === "ERROR") {
-                var errors = response.getError();
-                if (errors) {
-                    if (errors[0] && errors[0].message) {
-                        console.log("Error message: " + 
-                                 errors[0].message);
-                    }
-                } else {
-                    console.log("Unknown error");
-                }
-            }
-        });
-
-        $A.enqueueAction(action);
-    },
      getAccountSource : function(component, event, helper){
         var fieldname = "AccountSource";
         var action = component.get("c.getPickListValues");
@@ -108,19 +80,22 @@
         });
         $A.enqueueAction(action); 
     },  
-    massDeleteMethod:function(component, event, helper) { 
+    massDeleteMethod:function(component, event, helper,lis,type) { 
 	   var emptyList = [];     
        var action = component.get("c.massDeleteRecords");
-             action.setParams({ listOfAcc  	:component.get("v.ListForUpdateSource")
-                               		}); 
-              
-         action.setCallback(this, function(response) {
+          	action.setParams({ listOfAcc  	:lis });               
+         	action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === "SUCCESS") { 
-                var params={ "title": "Error!",mode: 'sticky',type: "Success","message": "Selected Records Deleted"};
+                var params={ "title": "Success",mode: 'sticky',type: "Success","message": "Selected Records Deleted"};
            	  		helper.showToasts(component, params, event);
                		component.set("v.mydata",response.getReturnValue());
+                if(type == 'single'){
+                     component.set("v.ListForDelete",emptyList);   
+                }else{
                     component.set("v.ListForUpdateSource",emptyList);   
+                }
+                    
 				 }
             else if (state === "ERROR") {
                 var errors = response.getError();
@@ -143,6 +118,37 @@
             errorToast.setParams(params);
         }
         errorToast.fire();
-}
+},
+   /* deleteMethod:function(component, event, helper,recId,mode) {         
+       var action = component.get("c.deleteRecord"); 
+       var emptyList=[];  
+             action.setParams({ recIdforDel : recId
+                              }); 
+            action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") { 
+                	var params={ "title": "Success!",mode: 'sticky',type: "Success","message": "Record Deleted"};
+           	  		helper.showToasts(component, params, event);
+               		component.set("v.mydata",response.getReturnValue());
+                	component.set("v.ListForUpdateSource",emptyList);
+				 }
+            else if (state === "ERROR") {
+                var errors = response.getError();
+                if (errors) {
+                    if (errors[0] && errors[0].message) {
+                        console.log("Error message: " + 
+                                 errors[0].message);
+                    var params={ "title": "Error!!",mode: 'sticky',type: "error",message: errors[0].message};
+           	  		helper.showToasts(component, params, event);               		
+                    }
+                } else {
+                    console.log("Unknown error");
+                }
+            }
+        });
+
+        $A.enqueueAction(action);
+    }*/
+     
     
 })

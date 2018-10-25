@@ -28,27 +28,20 @@ public class Hackathon_Controller {
         }
        upsert listOfids;        
        return getListOfRecords(); 
-    }
-    
-   @AuraEnabled
-    public static List<Account> deleteRecord(Id recIdforDel) {
-        system.debug('-->'+recIdforDel);
-        List<Account> accList=new List<Account>();       
-        accList.add(new account(Id=recIdforDel));
-        Database.delete(accList);
-        return getListOfRecords();      
-    }  
-    
-    
-          
+    }     
    @AuraEnabled
     public static List<Account> massDeleteRecords(List<Account> listOfAcc) {
         system.debug('-->'+listOfAcc);
        List<Account>  listOfids=new List<Account>();
+        Database.DeleteResult[] DR_Dels;
         for(Account acc:listOfAcc ){
             listOfids.add(acc);
         }
-        Database.delete(listOfids);
+        try{
+                DR_Dels=Database.delete(listOfids,true);
+        }catch(System.DmlException e){
+             system.debug(e+'DR_Dels');
+        }
         return getListOfRecords();      
     }  
         
@@ -65,6 +58,17 @@ public class Hackathon_Controller {
         return options;
         
     }
+    /*
+     * @AuraEnabled
+    public static List<Account> deleteRecord(Id recIdforDel) {
+        system.debug('-->'+recIdforDel);
+        List<Account> accList=new List<Account>();       
+        accList.add(new account(Id=recIdforDel));
+      	Database.delete(accList);
+        return getListOfRecords();      
+    }  
+    
+   */
     
         
 }

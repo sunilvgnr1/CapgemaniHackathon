@@ -12,19 +12,9 @@
         helper.ServerCallMethod(component);        
     },       
     onEdit:function(component, event, helper) {  
-        	var recId=event.getSource().get("v.alternativeText"); 
-            var editRecordEvent = $A.get("e.force:editRecord");
-            editRecordEvent.setParams({
-                 "recordId": recId
-           });
-        editRecordEvent.fire();
-        window.setTimeout(
-    		$A.getCallback(function() {
-        		  helper.ServerCallMethod(component);
-                  $A.get('e.force:refreshView').fire();
-    			}), 15000
-			);
-               
+        	var recId=event.getSource().get("v.class");        
+             component.set("v.editSelectedRecord",recId);
+             component.set("v.isOpenNew",true);              
     },
     onClickHyperlink:function(component, event, helper) {
        		 var recId=event.target.id;
@@ -34,8 +24,16 @@
              component.set("v.flag",true);
     },
     onDelete:function(component, event, helper) {
-     	var recId=event.getSource().get("v.alternativeText");
-     	helper.deleteMethod(component, event, helper,recId,'singleRecord');
+        var type		='single';
+     	var recIndex	=event.getSource().get("v.alternativeText");
+     	var lis   		=component.get("v.ListForDelete");
+        var mydat 		=component.get("v.mydata");
+        if(!lis.includes(mydat[recIndex])){            
+            lis.unshift(mydat[recIndex]);           
+        }
+        component.set("v.ListForDelete",lis);       
+        helper.massDeleteMethod(component, event, helper,lis,type);
+     	//helper.deleteMethod(component, event, helper,recId,lis);
     },
     onUpdateSource:function(component, event, helper) {
         var lis =component.get("v.ListForUpdateSource");
@@ -74,14 +72,27 @@
 
    },
     onMassDelete:function(component, event, helper) {
-     	var lis =component.get("v.ListForUpdateSource");
+     	var lis  =component.get("v.ListForUpdateSource");
+        var type ='mass';
         if(lis.length > 0){
-            helper.massDeleteMethod(component, event, helper);
+            helper.massDeleteMethod(component, event, helper,lis,type);
         }else{
               var params={ "title": "Error!",mode: 'sticky',type: "error","message": "Please select the records to delete"};
            	  helper.showToasts(component, params, event);
         }
       	
-   }
-    
+   },
+    closeModelEdit: function(component, event, helper) {
+       component.set("v.isOpenNew", false);
+   },
+    onSaveEdit:function(component, event, helper) {
+       component.find("edit").get("e.recordSave").fire();
+       helper.ServerCallMethod(component);
+       component.set("v.isOpenNew", false);
+      
+   },   
+    handleSaveSuccess : function(cmp, event) {
+        // Display the save status
+        cmp.set("v.saveState", "SAVED");
+    }
 })
