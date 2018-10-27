@@ -1,0 +1,4 @@
+<design:component>
+    <design:attribute name="extraFields" label="Specify the Field Api Name to add " />	
+    <design:attribute name="builderTrue" label="Check to show Rating and No of Emp" />
+</design:component>

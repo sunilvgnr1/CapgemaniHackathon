@@ -11,26 +11,32 @@
 */
 public class Hackathon_Controller {
     
-    Public Static STRING QUERYSTRING='SELECT Id, AccountSource, CreatedBy.Name, AnnualRevenue, Industry, AccountNumber, Type, Name, Ownership FROM Account Order by LastModifiedDate DESC LIMIT 10 ';
-    
+    Public Static STRING QUERYSTRING='SELECT Id, AccountSource, CreatedBy.Name, AnnualRevenue, Industry, AccountNumber, Type, Name, ';
+    Public Static STRING Q_ORDER=' Ownership FROM Account Order by LastModifiedDate DESC LIMIT 100  ';
 	@AuraEnabled
-    public static List<Account> getListOfRecords() {    
-        List<Account> listOfRecords  = Database.query(QUERYSTRING);    
+    public static List<Account> getListOfRecords(String extraFieldsList) {  
+        //String qq='Rating, NumberOfEmployees,';
+      	String Q=QUERYSTRING+Q_ORDER;
+        if(extraFieldsList != 'empty' && extraFieldsList != null ){
+             Q=QUERYSTRING+''+extraFieldsList+''+Q_ORDER;
+        }
+        system.debug('-->'+Q);
+        List<Account> listOfRecords  = Database.query(Q);    
         return listOfRecords;       
     }
         
          
 	@AuraEnabled
-    public static List<Account> saveListOfRecords(List<Account> listOfrec) { 
+    public static List<Account> saveListOfRecords(List<Account> listOfrec,String extraFieldsList) { 
         List<Account>  listOfids=new List<Account>();
         for(Account acc:listOfrec ){
             listOfids.add(acc);
         }
        upsert listOfids;        
-       return getListOfRecords(); 
+       return getListOfRecords(extraFieldsList); 
     }     
    @AuraEnabled
-    public static List<Account> massDeleteRecords(List<Account> listOfAcc) {
+    public static List<Account> massDeleteRecords(List<Account> listOfAcc,String extraFieldsList) {
         system.debug('-->'+listOfAcc);
        List<Account>  listOfids=new List<Account>();
         Database.DeleteResult[] DR_Dels;
@@ -42,7 +48,7 @@ public class Hackathon_Controller {
         }catch(System.DmlException e){
              system.debug(e+'DR_Dels');
         }
-        return getListOfRecords();      
+        return getListOfRecords(extraFieldsList);      
     }  
         
     @AuraEnabled

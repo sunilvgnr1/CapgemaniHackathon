@@ -14,14 +14,26 @@
     	<aura:attribute name="objInfo" 				type="Account" 	 default="{sobjectType : 'Account'}" />  
     	<aura:attribute name="tableLabels"  		type="List"      default="['Select','Account Name','Account Number',
                                                                       'Account Owner','Account Source','Annual Revenue','Type',
-                                                                      'Industry','Created By','Edit','Delete']" />
+                                                                      'Industry','Created By']" />
+    	
     
 		<aura:attribute name="saveState" 					type="String" 	 default="UNSAVED" />
     	<aura:attribute name="editSelectedRecord" 			type="String" 	  />
-    
+        <aura:attribute name="extraFields" 					type="String" 	 default='Rating, NumberOfEmployees,' />
+    	<aura:attribute name="builderTrue" 					type="Boolean" 	 default="false"/>
+
     
     <!-- Aura Attributes-->
-    
+    <!-- Pagination Attributes -->
+ 		 <aura:attribute name="startPoint" 	    type="integer" default="0"/>
+   		 <aura:attribute name="endPoint"        type="integer" default="10"/>
+    	 <aura:attribute name="PageLimit"       type="integer" default="10"/>
+    	<aura:attribute name="ButtonLimit"      type="integer" default="10"/>    
+    	<aura:attribute name="DataLoaded" 		type="Boolean" default="false"/>
+    	<aura:attribute name="pageDisableFlag" 	type="Boolean" default="false"/>
+
+		
+<!-- -->
     <!-- System and Event Handlers -->
         <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
   		<aura:handler name="onSaveSuccess" event="force:recordSaveSuccess" action="{!c.handleSaveSuccess}"/>
@@ -42,10 +54,26 @@
                         <div class="slds-truncate" title="{!obj}">{!obj}</div>
                     </th>
                     </aura:iteration>
+                   <aura:if isTrue="{!v.builderTrue}">
+              			<th scope="col"  class="slds-cell-wrap slds-text-title_caps" style="width: 1.25rem;">
+                        	<div class="slds-truncate" title="Rating">Rating</div>
+                    	</th>
+            
+              		<th scope="col"  class="slds-cell-wrap slds-text-title_caps" style="width: 1.25rem;">
+                        	<div class="slds-truncate" title="NoOfEmp">NoOfEmp</div>
+                    	</th>
+                       
+                    </aura:if>
+                  	<th scope="col"  class="slds-cell-wrap slds-text-title_caps" style="width: 1.25rem;">
+                        <div class="slds-truncate" title="Edit">Edit</div>
+                    </th>
+                   	<th scope="col"  class="slds-cell-wrap slds-text-title_caps" style="width: 1.25rem;">
+                        <div class="slds-truncate" title="Delete">Delete</div>
+                    </th>
 				</tr>
 		</thead>
 		<tbody>                
-      		<aura:iteration items="{!v.mydata}" var="obj" indexVar="index">
+      		<aura:iteration items="{!v.mydata}" var="obj" indexVar="index" start="{!v.startPoint}" end="{!v.endPoint}">
                 <tr class="slds-hint-parent">
               <td data-label="select">
                 <div class="slds-truncate slds-text-align--center slds-m-left--small" title="Select" >                    
@@ -95,6 +123,20 @@
                          <ui:outputText class="" value="{!obj.CreatedBy.Name}"/>                         
                 </div>
             </td> 
+          <aura:if isTrue="{!v.builderTrue}">
+              <td data-label="{!obj.Rating}">
+                <div class="slds-truncate" title="{!obj.Rating}">
+                         <ui:outputText class="" value="{!obj.Rating}"/>                         
+                </div>
+            </td> 
+              <td data-label="{!obj.NumberOfEmployees}">
+                <div class="slds-truncate" title="{!obj.NumberOfEmployees}">
+                         <ui:outputNumber class="" value="{!obj.NumberOfEmployees}"/>                         
+                </div>
+            </td> 
+                   	
+                    </aura:if>
+                    
               <td> 
                 <div class="slds-truncate" title="edit">
                  <lightning:buttonIcon iconName="utility:edit" class="{!obj.Id}" variant="warning" onclick="{! c.onEdit }" alternativeText="{!obj.Id}" />
@@ -106,9 +148,21 @@
                 </div>            
             </td>
         </tr>
+                
             </aura:iteration>
+            <tr>
+                 
+                </tr>
         </tbody>
 	</table>
+            <aura:if isTrue="{!v.DataLoaded}">
+      					<c:PaginationHandler 	PageLimit="{!v.PageLimit}" 
+			             	                    ButtonLimit="{!v.ButtonLimit}"
+                                                maxLength="{!v.mydata.length}"
+                                                 startPoint="{!v.startPoint}"
+                                                 endPoint="{!v.endPoint}"
+                                      />
+           </aura:if>
         </div>
         </lightning:card>
     
@@ -248,5 +302,10 @@
             
         </aura:if>
     </div>
-     
+ 
+    
+     <!-- Pagination page number begins-->
+    
+     <!-- Pagination page number Ends-->
+   
 </aura:component>

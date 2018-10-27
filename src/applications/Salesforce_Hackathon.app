@@ -9,7 +9,7 @@
     <formFactors>Large</formFactors>
     <label>Salesforce Hackathon</label>
     <navType>Standard</navType>
-    <tab>Accounts_Home_Page</tab>
+    <tab>Accounts</tab>
     <uiType>Lightning</uiType>
     <utilityBar>Salesforce_Hackathon_UtilityBar</utilityBar>
 </CustomApplication>

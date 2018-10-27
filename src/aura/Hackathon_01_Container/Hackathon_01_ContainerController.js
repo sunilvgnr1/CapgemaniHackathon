@@ -89,6 +89,8 @@
        component.find("edit").get("e.recordSave").fire();
        helper.ServerCallMethod(component);
        component.set("v.isOpenNew", false);
+       var emptyList=[];
+       component.set("v.ListForUpdateSource",emptyList);   
       
    },   
     handleSaveSuccess : function(cmp, event) {

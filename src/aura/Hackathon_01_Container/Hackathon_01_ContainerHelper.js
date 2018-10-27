@@ -1,11 +1,16 @@
 ({
     /*ServerCallMethod:Used to fetch the latest account record*/
-     ServerCallMethod: function(component, event, helper) {        
-        var action = component.get("c.getListOfRecords");       
+     ServerCallMethod: function(component, event, helper) { 
+         
+        var action = component.get("c.getListOfRecords");  
+        var extraFields=component.get("v.extraFields");       
+              action.setParams({ extraFieldsList :extraFields});     
         action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === "SUCCESS") {
-               component.set("v.mydata",response.getReturnValue());				
+               component.set("v.mydata",response.getReturnValue());	
+                
+               component.set("v.DataLoaded",true);
             }else if (state === "ERROR") {
                 var errors = response.getError();
                 if (errors) {
@@ -24,8 +29,11 @@
     /*SaveMethod:Used to Save the 'Updated Account Source' Records*/
      SaveMethod:function(component, event, helper) {
        var emptyList = [];
+       var extraFields=component.get("v.extraFields");       
+             
        var action 	 = component.get("c.saveListOfRecords");
-        action.setParams({ listOfrec : component.get("v.ListForUpdateSource") });
+         action.setParams({ 	listOfrec		 : component.get("v.ListForUpdateSource"),
+                           extraFieldsList :extraFields });
         action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === "SUCCESS") { 
@@ -81,9 +89,11 @@
         $A.enqueueAction(action); 
     },  
     massDeleteMethod:function(component, event, helper,lis,type) { 
-	   var emptyList = [];     
-       var action = component.get("c.massDeleteRecords");
-          	action.setParams({ listOfAcc  	:lis });               
+	   var emptyList 	= [];  
+       var extraFields	= component.get("v.extraFields");   
+       var action 		= component.get("c.massDeleteRecords");
+          	action.setParams({ listOfAcc  	:lis,
+                             extraFieldsList :extraFields});               
          	action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === "SUCCESS") { 
